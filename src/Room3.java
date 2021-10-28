@@ -1,2 +1,2 @@
-public class Room3 {
+public class Room3 extends Room {
 }
