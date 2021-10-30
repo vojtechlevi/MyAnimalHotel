@@ -7,8 +7,10 @@ public class Dog extends Animal {
     }
 
     public void sayHello() {
-        System.out.println("The dog says: Woff Woff.");
+        System.out.println("\t " + name + " says: Woff Woff.");
     }
+
+
 
 }
 

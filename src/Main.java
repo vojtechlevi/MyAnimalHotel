@@ -4,8 +4,5 @@ public class Main {
         AnimalHotel myAnimalHotel = new AnimalHotel();
         myAnimalHotel.startMenu();
 
-
-
-
     }
 }
