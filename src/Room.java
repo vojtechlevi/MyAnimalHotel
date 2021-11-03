@@ -1,19 +1,12 @@
-import java.util.Scanner;
-
-
-
 public class Room {
 
-    String description;
     int roomNr;
+    int roomBox;
 
+    public Room(){
 
-    public String getDescription() {
-        return description;
     }
-    public void setDescription(String description) {
-        this.description = description;
-    }
+
 
     public int getRoomNr() {
         return roomNr;
@@ -22,34 +15,33 @@ public class Room {
         this.roomNr = roomNr;
     }
 
-    public void describe() {
-        System.out.println("Description of the rooms:");
+    public int getRoomBox() {
+        return roomBox;
+    }
+    public void setRoomBox(int roomBox) {
+        this.roomBox = roomBox;
     }
 
+    public void describe() {
+        System.out.println("\t Fresh and newly renovated rooms with boxes for dogs, cats & turtles");
+    }
 
+    @Override
+    public String toString() {
+        return " Room {" + "Room Nr = " + roomNr + '}' + "\n ";
+    }
 
-
-    private String mainName;
-    int animalsInRoom;
-
-public Room() {
+    /*
+    public Room() {
   mainName = "k";
 
 }
-public void setName(String aName) {
-
-
-    mainName = aName;
 
 }
-public String getName() {
-
-    return mainName;
-}
-   private static void Initialise(Room[] myAnimalHotel) {
+    private static void Initialise(Room[] myAnimalHotel) {
 
 
-       for (Room room : myAnimalHotel) {
+       for (Room : myAnimalHotel) {
            room.setName("nobody");
        }
 
@@ -64,4 +56,5 @@ public String getName() {
         myAnimalHotel[roomNum].setName(roomName);
     }
 
+     */
 }

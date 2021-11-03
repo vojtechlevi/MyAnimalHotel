@@ -8,11 +8,6 @@ public class Animal {
 
     }
 
-    public void sayHello() {
-        System.out.println("The animals says hello!");
-    }
-
-
     public String getName() {
         return name;
     }
@@ -34,12 +29,13 @@ public class Animal {
         this.favoriteActivity = favoriteActivity;
     }
 
+    public void sayHello() {
+        System.out.println("\t The animals says hello!");
+    }
+
     @Override
     public String toString() {
-        return "Animal {" +
-                "Name = '" + name + '\'' +
-                ", Favorite Food = '" + favoriteFood + '\'' +
-                ", Favorite Activity = '" + favoriteActivity + '\'' +
-                '}';
+        return "\n Animal {" + "Name = '" + name + '\''  + '}' + " ";
     }
+
 }

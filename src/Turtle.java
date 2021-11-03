@@ -6,7 +6,9 @@ public class Turtle extends Animal {
         this.favoriteActivity = favoriteActivity;
     }
 
+    @Override
     public void sayHello() {
         System.out.println("\t The turtle remains silent...");
     }
+
 }

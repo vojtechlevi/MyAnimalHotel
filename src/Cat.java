@@ -6,6 +6,7 @@ public class Cat extends Animal {
         this.favoriteActivity = favoriteActivity;
     }
 
+    @Override
     public void sayHello() {
         System.out.println("\t The cat says: Meow.");
     }

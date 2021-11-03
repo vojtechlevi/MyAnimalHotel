@@ -1,13 +1,15 @@
 public class CatRoom extends Room {
 
-    public CatRoom(String description, int roomNr) {
-        this.description = description;
+    public CatRoom(int roomNr) {
         this.roomNr = roomNr;
+
 
     }
 
     public void describe() {
-        System.out.println("Room for cats");
+        System.out.println(" ");
+        System.out.println("\t Room [" + roomNr + "] for cats, with boxes and loads of different food and toys");
 
     }
+
 }

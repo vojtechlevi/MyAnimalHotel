@@ -6,11 +6,10 @@ public class Dog extends Animal {
         this.favoriteActivity = favoriteActivity;
     }
 
+    @Override
     public void sayHello() {
         System.out.println("\t " + name + " says: Woff Woff.");
     }
-
-
-
+    
 }
 
