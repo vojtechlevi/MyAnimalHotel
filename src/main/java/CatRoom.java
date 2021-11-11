@@ -1,8 +1,5 @@
 public class CatRoom extends Room {
 
-    public CatRoom(){
-
-    }
 
     public CatRoom(int roomNr, boolean isBooked, String roomName) {
         this.roomNr = roomNr;

@@ -1,5 +1,6 @@
 public class Room {
 
+    // Tre olika datatyper och en klass attribut
     int roomNr;
     boolean isBooked;
     String roomName;
@@ -9,6 +10,7 @@ public class Room {
 
     }
 
+    // Getter & Setter metoder för de olika attributen
     public int getRoomNr() {
         return roomNr;
     }
@@ -37,6 +39,8 @@ public class Room {
         this.roomName = roomName;
     }
 
+    // Metod som skriver ut generell beskrivning utav rummen
+    // Overridas av child-klasserna
     public void describe() {
         System.out.println("\t Fresh and newly renovated rooms with boxes for dogs, cats & turtles");
     }

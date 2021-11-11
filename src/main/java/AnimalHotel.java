@@ -144,8 +144,20 @@ public class AnimalHotel {
         initRooms(); // metod som skapar objekt av olika rum
 
         if(file.exists()){
-            System.out.println("");
-            loadFromFile("Kvitto.txt");
+            System.out.println("\t There's a file saved with previous bookings");
+            System.out.println("\t Would you load that file?");
+            System.out.println(" ");
+            System.out.println("\t [1] Load from file");
+            System.out.println("\t [2] No, continue");
+            System.out.println(" ");
+            System.out.print("\t >");
+            int userInput = getUserInt();
+            if(userInput == 1) {
+                System.out.println(" ");
+                System.out.println("\t Loading file...");
+                loadFromFile("Kvitto.txt");
+                System.out.println("\t Loading finished.");
+            }
         }
 
 
@@ -176,7 +188,7 @@ public class AnimalHotel {
     public void initRooms() {
 
         // Skapar olika rum och lagrar i arraylistan (roomList)
-        roomList = new ArrayList<Room>();
+        roomList = new ArrayList<>();
         Room DogRoom1 = new DogRoom(1, false, "Dog room");
         roomList.add(DogRoom1);
 

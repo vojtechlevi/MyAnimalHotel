@@ -1,9 +1,8 @@
 public class DogRoom extends Room {
 
+    // Denna klass ärver attribut och metoder från Room
 
-    public DogRoom(){
 
-    }
     public DogRoom(int roomNr, boolean isBooked, String roomName) {
         this.roomNr = roomNr;
         this.isBooked = isBooked;
