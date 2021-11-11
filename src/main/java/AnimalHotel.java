@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -7,14 +10,17 @@ public class AnimalHotel {
     Scanner inputScanner = new Scanner(System.in); // Scanner som lagrar inmatning från användaren
     public boolean runProgram = true;
 
+    // Skapar en fil och tillfälliga objekt av Animal & Room som används när man hämtar från en fil
+    File file = new File("Kvitto.txt");
+    Animal currentAnimalObj;
+    Room currentRoomObj;
 
-    // Metod som hämtar inmatning utav strängar
+
+    // Två metoder som hämtar inmatning utav strängar och siffror
     public String getUserString() {
 
         return inputScanner.nextLine();
     }
-
-    // Metod som hämtar inmatning utav siffror
     public int getUserInt() {
         int myInt;
         while (true) {
@@ -22,18 +28,128 @@ public class AnimalHotel {
                 myInt = Integer.parseInt(inputScanner.nextLine());
                 break;
             } catch (Exception e) {
-                System.out.println("\t Felaktigt menyval");
-                System.out.println("\t > ");
+                System.out.println("\t Sorry, try again!");
+                System.out.println(" ");
+                System.out.print("\t > ");
             }
         }
         return myInt;
     }
 
+    // Två metoder för att kunna skriva till och ladda från filer
+    public void writeToFile() throws IOException{
+
+
+        // Frågar om användaren vill spara bokningar till en fil
+        System.out.println("\t Would you like to save your booking?");
+        System.out.println(" ");
+        System.out.println("\t [1] Yes");
+        System.out.println("\t [2] No, continue");
+        System.out.println(" ");
+        System.out.print("\t > ");
+        int userInput = getUserInt();
+
+        // Objekt av klassen Filewriter skapas och loopar igenom rumlistan om det finns någon bokning gjord
+        // Skriver in all information om bokningen med String text och writer.write(text)
+        // Om något problem uppstår fångas den av Catchen
+        FileWriter writer = new FileWriter(file);
+        if (userInput == 1) {
+
+            try {
+                for (int i = 0; i < roomList.size(); i++) {
+                    if (roomList.get(i).getIsBooked()) {
+                        String text = (roomList.get(i).getGuest().getClass() + "," + roomList.get(i).getGuest().getName() + "," + roomList.get(i).getGuest().getFavoriteFood() + "," + roomList.get(i).getGuest().getFavoriteActivity() + ","
+                                + roomList.get(i).getRoomNr() + "," + roomList.get(i).getRoomName() + "," + roomList.get(i).getIsBooked() + "\n");
+                        writer.write(text);
+
+                    }
+                }
+                writer.close();
+            } catch (IOException e) {
+                System.out.println("\t An error occurred.");
+                e.printStackTrace();
+            }
+        }
+    }
+    public void loadFromFile(String file)throws IOException{
+
+        // Skapar nya objekt av klasserna File och Scanner
+        File file1 = new File(file);
+        Scanner fileReader = new Scanner(file1);
+
+
+        // Om filens längd är större än 1
+        if(file1.length() > 1){
+
+            // Och så länge det finns något att läsa från filen
+            while(fileReader.hasNextLine()){
+
+                // En String som läser rader i filen
+                // En Array som sparar specifik information i separata index och splittar med ett komma
+                String line = fileReader.nextLine();
+                String[] attributes = line.split(",");
+
+                // Sätter de olika värdena i separata index
+                String animalClass = attributes[0];
+                String animalName = attributes[1];
+                String animalFood = attributes[2];
+                String animalActivity = attributes[3];
+                int roomNr = Integer.parseInt(attributes[4]); //
+                String roomName = attributes[5];
+                boolean roomBooked = Boolean.parseBoolean(attributes[6]);
+
+
+                // Om något i filen finns så skapas ett objekt av det djuret med dem attributen som man sparat tidigare
+                if(animalClass.equals("class Dog")){
+                    currentAnimalObj = new Dog(animalName,animalFood,animalActivity);
+                }
+                if(animalClass.equals("class Cat")){
+                    currentAnimalObj = new Cat(animalName,animalFood,animalActivity);
+                }
+                if(animalClass.equals("class Turtle")){
+                    currentAnimalObj = new Turtle(animalName,animalFood,animalActivity);
+                }
+
+                // Om något specifikt rum finns lagrat i filen så skapas ett nytt objekt av det rummet och djuret sätts som gäst
+                if(roomName.equals("Dog room")){
+                    currentRoomObj = new DogRoom(roomNr,roomBooked,roomName);
+                    currentRoomObj.setGuest(currentAnimalObj);
+                }
+                if(roomName.equals("Cat room")){
+                    currentRoomObj = new CatRoom(roomNr,roomBooked,roomName);
+                    currentRoomObj.setGuest(currentAnimalObj);
+                }
+                if(roomName.equals("Turtle room")) {
+                    currentRoomObj = new TurtleRoom(roomNr, roomBooked, roomName);
+                    currentRoomObj.setGuest(currentAnimalObj);
+                }
+
+                // Loopar igenom rumslistan och kollar om rumslistans rumsnummer är lika med det tillfälliga rummet
+                // Skriver över det rummet med den tillfälliga gästen
+                // Och sätter att rummet är bokat
+                for(int i = 0; i < roomList.size(); i++){
+                    if(roomList.get(i).getRoomNr() == currentRoomObj.getRoomNr()){
+                        roomList.get(i).setGuest(currentAnimalObj);
+                        roomList.get(i).setIsBooked(true);
+                    }
+                }
+            }
+        }
+    }
+
+
     // Start Meny
-    public void startMenu() {
+    public void startMenu() throws IOException {
 
-        initRooms();
+        initRooms(); // metod som skapar objekt av olika rum
 
+        if(file.exists()){
+            System.out.println("");
+            loadFromFile("Kvitto.txt");
+        }
+
+
+        // Meny med olika val som styrs med en switch-sats
         while (runProgram) {
             System.out.println("___________________________________________________");
             System.out.println("\t   # Hello, Welcome to our Animal Hotel! #");
@@ -47,16 +163,21 @@ public class AnimalHotel {
             int userInput = getUserInt();
             switch (userInput) {
                 case 1 -> mainMenu();
-                case 2 -> runProgram = false;
+                case 2 -> {
+                    runProgram = false;
+                    writeToFile();
+                }
                 default -> System.out.println("\t Sorry, try again!");
             }
         }
     }
 
+    // Skapar rum
     public void initRooms() {
 
+        // Skapar olika rum och lagrar i arraylistan (roomList)
         roomList = new ArrayList<Room>();
-        Room DogRoom1 = new DogRoom(1,false, "Dog room");
+        Room DogRoom1 = new DogRoom(1, false, "Dog room");
         roomList.add(DogRoom1);
 
         Room CatRoom1 = new CatRoom(2, false, "Cat room");
@@ -67,8 +188,9 @@ public class AnimalHotel {
     }
 
     // Huvud Meny
-    public void mainMenu() {
+    public void mainMenu() throws IOException {
 
+        // Meny med olika val som styrs av en switch-sats
         while (runProgram) {
             System.out.println("___________________________________________________");
             System.out.println("\t            # Main Menu #");
@@ -87,18 +209,20 @@ public class AnimalHotel {
                 case 2 -> animalCheckOut();
                 case 3 -> animalUpdate();
                 case 4 -> currentBookings();
-                case 5 -> runProgram = false;
+                case 5 -> {
+                    runProgram = false;
+                    writeToFile();
+                }
                 default -> System.out.println("\t Sorry, try again!");
             }
         }
     }
 
     // Djur incheckning
-    public void animalCheckIn() {
+    public void animalCheckIn() throws IOException {
 
         Room mainRoom = new Room();
         Animal newAnimal = new Animal();
-        Room newRoom;
 
         // Skriver ut generell rumsbeskrivning och frågar användaren vilket djur man vill boka för
         System.out.println("___________________________________________________");
@@ -157,11 +281,12 @@ public class AnimalHotel {
             newAnimal = new Turtle(animalName, animalFood, animalActivity);
         }
 
+        //Skriver ut lediga rum med en for-loop som går igenom roomList
         System.out.println(" ");
         System.out.println("\t Room List for available rooms");
         System.out.println("\t _______________________________________________");
-        for (int i = 0; i < roomList.size(); i++){
-            if(!roomList.get(i).getIsBooked()){
+        for (int i = 0; i < roomList.size(); i++) {
+            if (!roomList.get(i).getIsBooked()) {
                 System.out.println("\t Room name = " + roomList.get(i).getRoomName() + "\t Room Number = " + roomList.get(i).getRoomNr());
             }
         }
@@ -179,12 +304,12 @@ public class AnimalHotel {
 
         // Beroende på vilket rum man vill boka för djuret så skapas det ett objekt av det rummet
         // och lagras i arraylist (Room), rumsbeskrivning skrivs ut
-        if(userInput == 1){
+        if (userInput == 1) {
 
-            if(roomList.get(0).getIsBooked()){
+            if (roomList.get(0).getIsBooked()) {
                 System.out.println(" ");
                 System.out.println("\t This room is already booked");
-            }else {
+            } else {
                 roomList.get(0).setGuest(newAnimal);
                 roomList.get(0).setIsBooked(true);
                 System.out.println(" ");
@@ -194,7 +319,7 @@ public class AnimalHotel {
                 newAnimal.sayHello();
             }
         }
-        if(userInput == 2){
+        if (userInput == 2) {
 
             roomList.get(1).setGuest(newAnimal);
             roomList.get(1).setIsBooked(true);
@@ -204,7 +329,7 @@ public class AnimalHotel {
             System.out.println(" ");
             newAnimal.sayHello();
         }
-        if (userInput == 3){
+        if (userInput == 3) {
 
             roomList.get(2).setGuest(newAnimal);
             roomList.get(2).setIsBooked(true);
@@ -230,7 +355,7 @@ public class AnimalHotel {
     }
 
     // Djur utcheckning
-    public void animalCheckOut() {
+    public void animalCheckOut() throws IOException {
 
         // Frågar användaren efter djurets namn
         System.out.println("___________________________________________________");
@@ -254,15 +379,16 @@ public class AnimalHotel {
                 System.out.println("\t Thanks you for booking at our Hotel!");
                 roomList.get(i).setGuest(null);
                 break;
-            }else {
+            } else {
                 System.out.println("\t Sorry, " + animalName + " haven't been booked here ");
             }
         }
     }
 
     // Djur uppdatering
-    public void animalUpdate() {
+    public void animalUpdate() throws IOException {
 
+        //Meny och olika val om användarens djur har nytt namn, favoritmat, eller ny favoritaktivitet
         System.out.println("___________________________________________________");
         System.out.println("\t          # Animal Update #");
         System.out.println(" ");
@@ -282,6 +408,7 @@ public class AnimalHotel {
         System.out.print("\t > ");
         int userInput = getUserInt();
 
+        //Kollar så att det namnet användaren skrivit in finns inbokat och skriver sedan ut beroende på vilket val
         for (int i = 0; i < roomList.size(); i++) {
             if (roomList.get(i).getGuest() != null && animalName.equals(roomList.get(i).getGuest().getName())) {
                 if (userInput == 1) {
@@ -310,16 +437,17 @@ public class AnimalHotel {
                     String newActivity = getUserString();
                     roomList.get(i).getGuest().setFavoriteActivity(newActivity);
                     break;
-                }else {
+                } else {
                     System.out.println("\t Sorry, " + animalName + " have not been booked here...");
                 }
             }
         }
     }
 
-    // Boknings info
-    public void currentBookings() {
+    // Meny för boknings info
+    public void currentBookings() throws IOException {
 
+        // Meny som styrs med en switch-sats beroende på val användaren matar in
         System.out.println("___________________________________________________");
         System.out.println("\t          # Current Bookings #");
         System.out.println(" ");
@@ -340,35 +468,42 @@ public class AnimalHotel {
     }
 
     // Listar alla bokningar med namn och rumsnummer
-    public void listAllBookings() {
-            System.out.println(" ");
+    public void listAllBookings() throws IOException {
+
+        //Loopar igenom alla rum i rumslistan och skriver ut namnen på djuren samt vilket rum dem är inbokade på
+        System.out.println(" ");
         for (Room room : roomList) {
             if (room.getIsBooked()) {
-                System.out.println("\t Name = " + room.getGuest().getName() + "\t Room = " + room.getRoomNr());
+                System.out.printf("\t Name = %-8s\t Room = %-16d \n", room.getGuest().getName(), room.getRoomNr());
             }
         }
-            System.out.println(" ");
-            System.out.println("\t [1] Back to current bookings");
-            System.out.println("\t [2] Back to Main Menu");
-            System.out.println(" ");
-            System.out.print("\t > ");
-            int userInput = getUserInt();
-            switch (userInput) {
-                case 1 -> currentBookings();
-                case 2 -> mainMenu();
-            }
+        System.out.println(" ");
+        System.out.println("\t [1] Back to current bookings");
+        System.out.println("\t [2] Back to Main Menu");
+        System.out.println(" ");
+        System.out.print("\t > ");
+        int userInput = getUserInt();
+        switch (userInput) {
+            case 1 -> currentBookings();
+            case 2 -> mainMenu();
+        }
     }
 
     // Listar specifik bokning med all information
-    public void specificBooking() {
-            System.out.println(" ");
-            System.out.println("\t Animal name");
-            System.out.println(" ");
-            System.out.print("\t > ");
-            String animalName = getUserString();
+    public void specificBooking() throws IOException {
 
+
+        System.out.println(" ");
+        System.out.println("\t Animal name");
+        System.out.println(" ");
+        System.out.print("\t > ");
+        String animalName = getUserString();
+        int count = 0;
+
+        //Loopar igenom alla rum i rumslistan och skriver ut all information om bokningen för det djuret.
         for (Room room : roomList) {
             if (room.getIsBooked() && animalName.equals(room.getGuest().getName())) {
+                count++;
                 System.out.println(" ");
                 System.out.println("________________________________________________________________________________");
                 System.out.println("\t Animal Name = " + room.getGuest().getName() + ",\n\t Favorite Food = " + room.getGuest().getFavoriteFood() + ",\n\t Favorite Activity = " + room.getGuest().getFavoriteActivity()
@@ -379,36 +514,43 @@ public class AnimalHotel {
                 room.describe();
                 System.out.println("________________________________________________________________________________");
                 System.out.println(" ");
-            }else {
-                System.out.println(" ");
-                System.out.println("Sorry, " + animalName + " haven't been booked here...");
+                break;
+
             }
         }
-            System.out.println(" ");
-            System.out.println("\t [1] Back to current bookings");
-            System.out.println("\t [2] Search for another animal name");
-            System.out.println("\t [3] Back to Main Menu");
-            System.out.println(" ");
-            System.out.print("\t > ");
-            int userInput = getUserInt();
-            switch (userInput) {
-                case 1 -> currentBookings();
-                case 2 -> specificBooking();
-                case 3 -> mainMenu();
-            }
+        if (count == 0) {
+            System.out.println("\t Sorry, we couldn't find any bookings info on " + animalName);
+        }
+
+        System.out.println(" ");
+        System.out.println("\t [1] Back to current bookings");
+        System.out.println("\t [2] Search for another animal name");
+        System.out.println("\t [3] Back to Main Menu");
+        System.out.println(" ");
+        System.out.print("\t > ");
+        int userInput = getUserInt();
+        switch (userInput) {
+            case 1 -> currentBookings();
+            case 2 -> specificBooking();
+            case 3 -> mainMenu();
+        }
     }
 
     // Listar filtrerade bokningar med all information
-    public void filteredBooking() {
-            System.out.println(" ");
-            System.out.println("\t Search on character, for example [ A or a ]");
-            System.out.println(" ");
-            System.out.print("\t > ");
-            String character = getUserString().toLowerCase();
-            System.out.println(" ");
+    public void filteredBooking() throws IOException {
 
+        System.out.println(" ");
+        System.out.println("\t Search on character, for example [ A or a ]");
+        System.out.println(" ");
+        System.out.print("\t > ");
+        String character = getUserString().toLowerCase();
+        int count = 0;
+
+        // Låter användaren söka efter en eller flera bokstäver och skriver ut all information om bokningen för de djur med sökta bokstäver i deras namn.
         for (Room room : roomList) {
             if (room.getIsBooked() && room.getGuest().getName().toLowerCase().contains(character)) {
+                count++;
+                System.out.println(" ");
                 System.out.println("________________________________________________________________________________");
                 System.out.println("\t Animal Name = " + room.getGuest().getName() + ",\n\t Favorite Food = " + room.getGuest().getFavoriteFood() + ",\n\t Favorite Activity = " + room.getGuest().getFavoriteActivity()
                         + "\n\t Room = " + room.getRoomNr());
@@ -418,21 +560,24 @@ public class AnimalHotel {
                 System.out.println("________________________________________________________________________________");
                 System.out.println(" ");
 
-            }else {
-                System.out.println("Sorry, we couldn't find any bookings info on [ " + character + "]");
             }
         }
-            System.out.println("\t [1] Back to current bookings");
-            System.out.println("\t [2] Search for another character");
-            System.out.println("\t [3] Back to Main Menu");
+        if (count == 0) {
+            System.out.println("\t Sorry, we couldn't find any bookings info on [ " + character + " ]");
             System.out.println(" ");
-            System.out.print("\t > ");
-            int userInput = getUserInt();
-            switch (userInput) {
-                case 1 -> currentBookings();
-                case 2 -> filteredBooking();
-                case 3 -> mainMenu();
-            }
+        }
+
+        System.out.println("\t [1] Back to current bookings");
+        System.out.println("\t [2] Search for another character");
+        System.out.println("\t [3] Back to Main Menu");
+        System.out.println(" ");
+        System.out.print("\t > ");
+        int userInput = getUserInt();
+        switch (userInput) {
+            case 1 -> currentBookings();
+            case 2 -> filteredBooking();
+            case 3 -> mainMenu();
+        }
     }
 }
 

@@ -14,5 +14,4 @@ public class CatRoom extends Room {
         System.out.println("\t Room [" + roomNr + "] for cats, with boxes and loads of different food and toys");
 
     }
-
 }

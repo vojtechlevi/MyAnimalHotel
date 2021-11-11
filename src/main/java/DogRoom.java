@@ -14,6 +14,4 @@ public class DogRoom extends Room {
     public void describe() {
         System.out.println("\t Room [" + roomNr + "] for dogs, with boxes and loads of different food and toys, \n\t also with a big yard where the dogs can run free");
     }
-
-
 }
