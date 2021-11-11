@@ -10,7 +10,7 @@ public class AnimalHotel {
     Scanner inputScanner = new Scanner(System.in); // Scanner som lagrar inmatning från användaren
     public boolean runProgram = true;
 
-    // Skapar en fil och tillfälliga objekt av Animal & Room som används när man hämtar från en fil
+    // Skapar en fil och tillfälliga variabler av Animal & Room som används i writeToFile() och loadFromFile()
     File file = new File("Kvitto.txt");
     Animal currentAnimalObj;
     Room currentRoomObj;

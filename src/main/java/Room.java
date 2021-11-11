@@ -1,6 +1,6 @@
 public class Room {
 
-    // Tre olika datatyper och en klass attribut
+    // Tre olika datatyper och en klass som attribut
     int roomNr;
     boolean isBooked;
     String roomName;
