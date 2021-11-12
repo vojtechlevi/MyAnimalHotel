@@ -384,16 +384,22 @@ public class AnimalHotel {
         // Om djurets namn finns inbokat
         // Skriver ut och tar bort bokningen
         // Annars skrivs det ut att namnet inte finns bokat
+        int count = 0;
         for (int i = 0; i < roomList.size(); i++) {
             if (roomList.get(i).getGuest() != null && animalName.equals(roomList.get(i).getGuest().getName())) {
                 System.out.println(" ");
                 System.out.println("\t We are sure that " + animalName + " had a great time being here!");
                 System.out.println("\t Thanks you for booking at our Hotel!");
                 roomList.get(i).setGuest(null);
+                roomList.get(i).setIsBooked(false);
                 break;
-            } else {
-                System.out.println("\t Sorry, " + animalName + " haven't been booked here ");
             }
+            if(roomList.get(i).getGuest() != null && !animalName.equals(roomList.get(i).getGuest().getName())) {
+                count++;
+            }
+        }
+        if(count == 1 || count == 2 || count == 3) {
+            System.out.println("\t Sorry, " + animalName + " haven't been booked here ");
         }
     }
 
